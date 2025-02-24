@@ -4,6 +4,7 @@ from splashscreen import SplashScreen
 from identity import IdentityScreen
 from login_screen import LoginScreen
 from map import Map
+from signup import SignUpScreen
 
 class IdentityApp(MDApp):
     def build(self):
@@ -13,6 +14,7 @@ class IdentityApp(MDApp):
         sm.add_widget(IdentityScreen(name='identity_screen'))
         sm.add_widget(LoginScreen(name='login_screen'))
         sm.add_widget(Map(name='map_screen'))
+        sm.add_widget(SignUpScreen(name='signup_screen'))
 
         sm.current = 'splash_screen'  # Start with the splash screen
         return sm
