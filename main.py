@@ -1,24 +1,21 @@
-from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivymd.app import MDApp
+from splashscreen import SplashScreen
+from identity import IdentityScreen
+from login_screen import LoginScreen
+from map import Map
 
-KV = '''
-MDScreen:
-    MDLabel:
-        text: "Hello, KivyMD!"
-        halign: "center"
-        theme_text_color: "Primary"
-
-    MDRaisedButton:
-        text: "Click Me"
-        pos_hint: {"center_x": 0.5, "center_y": 0.4}
-        on_press: app.on_button_click()
-'''
-
-class MyApp(MDApp):
+class IdentityApp(MDApp):
     def build(self):
-        return Builder.load_string(KV)
+        sm = ScreenManager()
 
-    def on_button_click(self):
-        print("Button clicked!")
+        sm.add_widget(SplashScreen(name='splash_screen'))
+        sm.add_widget(IdentityScreen(name='identity_screen'))
+        sm.add_widget(LoginScreen(name='login_screen'))
+        sm.add_widget(Map(name='map_screen'))
 
-MyApp().run()
+        sm.current = 'splash_screen'  # Start with the splash screen
+        return sm
+
+if __name__ == "__main__":
+    IdentityApp().run()
