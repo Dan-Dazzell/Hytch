@@ -6,6 +6,7 @@ from login_screen import LoginScreen
 from map import Map
 from signup import SignUpScreen
 
+
 class IdentityApp(MDApp):
     def build(self):
         sm = ScreenManager()
