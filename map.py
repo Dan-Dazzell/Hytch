@@ -1,11 +1,11 @@
 from kivy.uix.screenmanager import Screen
-from kivymd.uix.boxlayout import MDBoxLayout
 from kivy_garden.mapview import MapView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
+from kivy.uix.floatlayout import FloatLayout  # Allows positioning anywhere
 
-class Carbutton(ButtonBehavior, Image):
+class CarButton(ButtonBehavior, Image):
     pass
 
 class Map(Screen):
@@ -18,33 +18,31 @@ class Map(Screen):
             self.rect = Rectangle(size=self.size, pos=self.pos)
         self.bind(size=self.update_rect, pos=self.update_rect)
 
-        # Main layout
-        layout = MDBoxLayout(orientation='vertical', spacing=20, padding=20)
+        # Use FloatLayout to position elements freely
+        layout = FloatLayout()
 
         # MapView widget to display the map
         self.mapview = MapView(zoom=12, lat=17.0608, lon=-61.7964)  # Centered on Antigua
         layout.add_widget(self.mapview)
         
-        #add car image to screen
-        img_button = Carbutton(
-            source="Materials\driving car button.png",
-            size_hint=(None, None),  # Disable automatic resizing
-            size=(100, 100),  # Set fixed size
-            pos_hint = {"right": 1, "bottom": 1}
-
+        # Add car image button to screen
+        img_button = CarButton(
+            source="Materials/driving car button.png",  # Fixed file path
+            size_hint=(None, None),  
+            size=(100, 100),
+            pos_hint={"right": 0.98, "y": 0.05}  # Adjusted position
         )
-        img_button.bind(on_press=self.oncarpressed)
+        img_button.bind(on_press=self.on_car_pressed)
 
+        # Add button on top of the map
         layout.add_widget(img_button)
 
-        # Add the layout to the screen
+        # Add layout to screen
         self.add_widget(layout)
 
     def update_rect(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
         
-    def oncarpressed(self, instance):
-        print("clicked!!")
-
-
+    def on_car_pressed(self, instance):
+        print("Car button clicked!!")
