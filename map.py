@@ -1,4 +1,4 @@
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy_garden.mapview import MapView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.behaviors import ButtonBehavior
@@ -6,7 +6,9 @@ from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.animation import Animation
+from kivy.uix.button import Button
+from kivy.app import App
+
 
 class CarButton(ButtonBehavior, Image):
     pass
@@ -25,34 +27,48 @@ class Map(Screen):
         self.mapview = MapView(zoom=12, lat=17.0608, lon=-61.7964)
         layout.add_widget(self.mapview)
 
-        self.sidebar = BoxLayout(
-            orientation='vertical',
-            size_hint=(0.6, 1),  # Sidebar width = 60% of screen
-            pos_hint={'right': 2},  # Start off-screen
-            padding=20,
-            spacing=10
+        # Bottom toolbar
+        self.toolbar = BoxLayout(
+            orientation='horizontal',
+            size_hint=(1, 0.1),  # 10% of screen height
+            pos_hint={'x': 0, 'y': 0}
         )
-        self.sidebar.add_widget(Label(text="Hello, World!", font_size=24, color=(1,1,1,1)))
 
-        layout.add_widget(self.sidebar)
+        with self.toolbar.canvas.before:
+            Color(0, 150/255, 136/255, 1)  # Teal color
+            self.toolbar_rect = Rectangle(size=self.toolbar.size, pos=self.toolbar.pos)
+        self.toolbar.bind(size=self.update_toolbar_rect, pos=self.update_toolbar_rect)
 
-        self.img_button = CarButton(
-            source="Materials/driving car button.png",
-            size_hint=(None, None),
-            size=(100, 100),
-            pos_hint={"right": 0.98, "y": 0.05}
-        )
-        self.img_button.bind(on_press=self.toggle_sidebar)
-        layout.add_widget(self.img_button)
+        # Toolbar buttons
+        self.toolbar.add_widget(Button(text="Home", on_press=self.home_action))
+        self.toolbar.add_widget(Button(text="Search", on_press=self.search_action))
+        self.toolbar.add_widget(Button(text="Profile", on_press=self.profile_action))
 
+        layout.add_widget(self.toolbar)
         self.add_widget(layout)
 
     def update_rect(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
-    def toggle_sidebar(self, instance):
-        target_x = 0.4 if self.sidebar.pos_hint['right'] == 2 else 2  # Slide in or out
-        Animation(pos_hint={'right': target_x}, duration=0.3).start(self.sidebar)
-        
-        
+    def update_toolbar_rect(self, *args):
+        self.toolbar_rect.size = self.toolbar.size
+        self.toolbar_rect.pos = self.toolbar.pos
+
+    def home_action(self, instance):
+        print("Home button clicked")
+
+    def search_action(self, instance):
+        print("Search button clicked")
+
+    def profile_action(self, instance):
+        print("Profile button clicked")
+
+class MyApp(App):
+    def build(self):
+        sm = ScreenManager()
+        sm.add_widget(Map(name='map'))
+        return sm
+
+if __name__ == '__main__':
+    MyApp().run()
